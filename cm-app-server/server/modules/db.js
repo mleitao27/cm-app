@@ -41,7 +41,7 @@ var insertDocument = async (collectionName, newDocument) => {
     // Inserts document into loaded collection
     const dID = await collection.insertOne(newDocument);
     // Returns document
-    return dID.ops[0]._id;
+    return dID//.ops[0]._id;
 };
 
 /**

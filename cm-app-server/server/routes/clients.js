@@ -10,8 +10,12 @@ router.get('/', async (req, res) => {
 });
 
 // Add clients
-router.post('/', (req, res) => {
-    res.send('hello');
+router.post('/', async (req, res) => {
+    let clientId = await db.insertDocument('clients', {
+        name: req.body.name,
+        createdAt: new Date()
+    })
+    res.status(200).send(clientId);
 });
 
 // Delete clients
