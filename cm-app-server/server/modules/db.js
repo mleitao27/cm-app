@@ -45,7 +45,7 @@ var insertDocument = async (collectionName, newDocument) => {
 };
 
 /**
- * DESCRIPTION: Gets document from collection according to
+ * DESCRIPTION: Gets documents from collection according to
  * a search param passed as argument
  * ARGS:
  * - collectionName : collection where to look for the doc
@@ -56,6 +56,20 @@ var getDocument = async (collectionName, search) => {
     const collection = await loadCollection(collectionName);
     // Returns wanted doc as result of find
     return await collection.find(search).toArray();
+};
+
+/**
+ * DESCRIPTION: Get the first from collection according to
+ * a search param passed as argument
+ * ARGS:
+ * - collectionName : collection where to look for the doc
+ * - search : search param(s) used to find the doc
+ */
+var getFirstDocument = async (collectionName, search) => {
+    // Loads collection
+    const documents = await getDocument(collectionName, search);
+    // Returns wanted doc as result of find
+    return documents[0];
 };
 
 /**
@@ -117,6 +131,7 @@ var deleteAllDocuments = async (collectionName, search) => {
 exports.loadCollection = loadCollection;
 exports.insertDocument = insertDocument;
 exports.getDocument = getDocument;
+exports.getFirstDocument = getFirstDocument;
 exports.updateDocument = updateDocument;
 exports.deleteDocument = deleteDocument;
 exports.deleteAllDocuments = deleteAllDocuments;

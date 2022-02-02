@@ -8,13 +8,7 @@
       />
       <p>Clientes</p>
     </router-link>
-    <div class="flex justify-between items-center mb-8">
-      <button
-        @click="fetchClients"
-        class="px-4 py-2 rounded-2xl bg-blue-300 font-bold"
-      >
-        Carregar clientes
-      </button>
+    <div class="flex items-center mb-8">
       <router-link to="/clients/add" class="">
         <img
           src="@/assets/svg/add-black.svg"
@@ -27,11 +21,17 @@
       <div
         v-for="(client, index) of clients"
         :key="index"
-        class="p-4 mb-4 bg-blue-100 rounded-2xl"
+        class="p-4 mb-4 bg-blue-100 rounded-2xl flex items-center justify-between"
+        @click="seeDetails(client)"
       >
         <p>
           {{ client.name }}
         </p>
+        <img
+          src="@/assets/svg/up-arrow-black.svg"
+          alt="see client"
+          class="w-4 h-3 transform rotate-90"
+        />
       </div>
     </div>
   </div>
@@ -39,17 +39,30 @@
 
 <script>
 import { useStore } from 'vuex'
-import { computed } from 'vue'
+import { computed, onBeforeMount } from 'vue'
+import { useRouter } from 'vue-router'
 export default {
   setup() {
     const store = useStore()
-    const fetchClients = () => {
-      store.dispatch('fetchClients')
-    }
+    const router = useRouter()
+
+    onBeforeMount(async () => {
+      await store.dispatch('fetchClients')
+    })
+
     const clients = computed(() => {
       return store.state.clients.clients
     })
-    return { fetchClients, clients }
+
+    const seeDetails = async (client) => {
+      await store.dispatch('storeClient', client)
+      router.push('/clients/details/' + client._id)
+    }
+
+    return {
+      clients,
+      seeDetails
+    }
   }
 }
 </script>

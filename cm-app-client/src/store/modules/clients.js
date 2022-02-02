@@ -2,11 +2,15 @@ import axios from 'axios'
 
 export default {
   state: {
-    clients: null
+    clients: null,
+    client: null
   },
   mutations: {
     SET_CLIENTS(state, clients) {
       state.clients = clients
+    },
+    SET_CLIENT(state, client) {
+      state.client = client
     }
   },
   actions: {
@@ -23,6 +27,18 @@ export default {
       return axios
         .post(process.env.VUE_APP_SERVER_URL + 'api/clients', data)
         .then(({ data }) => {
+          return data
+        })
+    },
+    storeClient({ commit }, client) {
+      commit('SET_CLIENT', client)
+    },
+    fetchClient({ commit }, clientId) {
+      console.log(clientId)
+      return axios
+        .get(process.env.VUE_APP_SERVER_URL + 'api/clients/' + clientId)
+        .then(({ data }) => {
+          commit('SET_CLIENT', data)
           return data
         })
     }

@@ -9,10 +9,17 @@ router.get('/', async (req, res) => {
     res.status(200).send(await db.getDocument('clients', {}));
 });
 
+// Get client by id
+router.get('/:id', async (req, res) => {
+    res.status(200).send(await db.getFirstDocument('clients', {_id: new mongodb.ObjectId(req.params.id)}));
+});
+
 // Add clients
 router.post('/', async (req, res) => {
     let clientId = await db.insertDocument('clients', {
         name: req.body.name,
+        address: req.body.address,
+        fiscalNumber: req.body.fiscalNumber,
         createdAt: new Date()
     })
     res.status(200).send(clientId);
