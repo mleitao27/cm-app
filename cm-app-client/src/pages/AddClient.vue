@@ -8,19 +8,48 @@
       />
       <p>Adicionar cliente</p>
     </router-link>
+    <!-- Client -->
     <div class="mb-8">
       <p>Dados do cliente</p>
-      <div>
-        <label for="" class="mr-4">Nome:</label>
-        <input v-model="name" type="text" class="border rounded" />
+      <PersonForm v-model:data="data" />
+    </div>
+    <!-- Beneficiaries -->
+    <div class="mb-8">
+      <div class="w-full flex items-center justify-between">
+        <p>Beneficiários</p>
+        <img
+          src="@/assets/svg/add-black.svg"
+          alt="add beneficiary"
+          class="w-8 h-8"
+          @click="nextBeneficiary"
+        />
       </div>
-      <div>
-        <label for="" class="mr-4">Morada:</label>
-        <input v-model="address" type="text" class="border rounded" />
+      <div
+        v-for="beneficiary in data.beneficiaries"
+        :key="beneficiary.fiscalNumber"
+        class="w-full flex items-center justify-between"
+      >
+        <div class="bg-blue-100 p-4 mb-4 rounded-2xl">
+          {{ beneficiary }}
+        </div>
+        <img
+          src="@/assets/svg/trash-black.svg"
+          alt="remove beneficiary"
+          class="w-8 h-8"
+          @click="removeBeneficiary(beneficiary.fiscalNumber)"
+        />
       </div>
-      <div>
-        <label for="" class="mr-4">NIF:</label>
-        <input v-model="fiscalNumber" type="text" class="border rounded" />
+      <div
+        v-if="showBeneficiaryForm"
+        class="w-full flex items-center justify-between"
+      >
+        <PersonForm v-model:data="currentBeneficiary" />
+        <img
+          src="@/assets/svg/accept-black.svg"
+          alt="add beneficiary"
+          class="w-8 h-8"
+          @click="confirmBeneficiary"
+        />
       </div>
     </div>
     <div class="w-full flex justify-center">
@@ -35,26 +64,86 @@
 import { ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import PersonForm from '@/components/PersonForm.vue'
 export default {
+  components: {
+    PersonForm
+  },
   setup() {
     const store = useStore()
     const router = useRouter()
-    const name = ref(null)
-    const address = ref(null)
-    const fiscalNumber = ref(null)
+
+    const data = ref({
+      name: null,
+      address: null,
+      fiscalNumber: null
+    })
+
+    const beneficiaries = ref([])
+    const showBeneficiaryForm = ref(false)
+    const currentBeneficiary = ref({
+      name: null,
+      address: null,
+      fiscalNumber: null
+    })
+
     const add = () => {
       store.dispatch('addClient', {
-        name: name.value,
-        address: address.value,
-        fiscalNumber: fiscalNumber.value
+        name: data.value.name,
+        address: data.value.address,
+        fiscalNumber: data.value.fiscalNumber
       })
       router.push('/clients')
     }
+
+    const nextBeneficiary = () => {
+      if (!showBeneficiaryForm.value) showBeneficiaryForm.value = true
+    }
+
+    const confirmBeneficiary = () => {
+      if (data.value.beneficiaries) {
+        // Search for beneficiary with same fiscal number
+        const found = data.value.beneficiaries.find(
+          (b) => b.fiscalNumber === currentBeneficiary.value.fiscalNumber
+        )
+        if (found) {
+          console.log(
+            'ERROR: Already exist a beneficiary with this fiscal number'
+          )
+          return
+        }
+        // Add beneficiary
+        data.value.beneficiaries.push(currentBeneficiary.value)
+      } else data.value.beneficiaries = [currentBeneficiary.value]
+
+      // Hide form
+      showBeneficiaryForm.value = false
+
+      // Reset current beneficiary
+      currentBeneficiary.value = {
+        name: null,
+        address: null,
+        fiscalNumber: null
+      }
+    }
+
+    const removeBeneficiary = (fiscalNumber) => {
+      data.value.beneficiaries = data.value.beneficiaries.filter(
+        (beneficiary) => {
+          return beneficiary.fiscalNumber !== fiscalNumber
+        }
+      )
+    }
+
     return {
-      name,
       add,
-      address,
-      fiscalNumber
+      data,
+      beneficiaries,
+      nextBeneficiary,
+      currentBeneficiary,
+      showBeneficiaryForm,
+      confirmBeneficiary,
+      removeBeneficiary
     }
   }
 }
