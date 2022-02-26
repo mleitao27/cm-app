@@ -11,7 +11,10 @@ router.get('/', async (req, res) => {
 
 // Get client by id
 router.get('/:id', async (req, res) => {
-    res.status(200).send(await db.getFirstDocument('clients', {_id: new mongodb.ObjectId(req.params.id)}));
+    let client = await db.getFirstDocument('clients', {_id: new mongodb.ObjectId(req.params.id)})
+    let beneficiaries = await db.getDocument('beneficiaries', {clientId: new mongodb.ObjectId(req.params.id)})
+    let service = await db.getFirstDocument('services', {clientId: new mongodb.ObjectId(req.params.id)})
+    res.status(200).send({...client, beneficiaries, service});
 });
 
 // Add clients
@@ -22,11 +25,45 @@ router.post('/', async (req, res) => {
         fiscalNumber: req.body.fiscalNumber,
         createdAt: new Date()
     })
+    // If no beneficiaries were added
+    // or were added and then removed
+    // add the client as beneficiary
+    if(req.body.beneficiaries && req.body.beneficiaries.length) {
+        req.body.beneficiaries.map(async(b) => {
+            await db.insertDocument('beneficiaries', {
+                clientId: clientId.insertedId,
+                name: b.name,
+                address: b.address,
+                fiscalNumber: b.fiscalNumber,
+                createdAt: new Date()
+            })
+        })
+    } else {
+        await db.insertDocument('beneficiaries', {
+            clientId: clientId.insertedId,
+            name: req.body.name,
+            address: req.body.address,
+            fiscalNumber: req.body.fiscalNumber,
+            createdAt: new Date()
+        })
+    }
+    // If there is already a service to add
+    if(req.body.service) {
+        await db.insertDocument('services', {
+            clientId: clientId.insertedId,
+            type: req.body.service.type,
+            regime: req.body.service.regime,
+            shifts: req.body.service.shifts,
+            beginning: req.body.service.beginning,
+            duration: req.body.service.duration,
+            createdAt: new Date()
+        })
+    }
     res.status(200).send(clientId);
 });
 
 // Delete clients
-router.delete('/', (req, res) => {
+router.delete('/:id', (req, res) => {
     res.send('hello');
 });
 

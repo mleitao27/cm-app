@@ -24,6 +24,7 @@
           @click="nextBeneficiary"
         />
       </div>
+      <!-- Beneficiaries list -->
       <div
         v-for="beneficiary in data.beneficiaries"
         :key="beneficiary.fiscalNumber"
@@ -39,16 +40,78 @@
           @click="removeBeneficiary(beneficiary.fiscalNumber)"
         />
       </div>
+      <!-- Include client as beneficiary checkbox -->
+      <div
+        v-if="data.beneficiaries && data.beneficiaries.length && clientFilled"
+        class="flex items-center"
+      >
+        <img
+          v-if="!clientAsBeneficiary"
+          src="@/assets/svg/accept-black.svg"
+          alt="check"
+          class="w-8 h-8"
+          @click="addClientAsBeneficiary"
+        />
+        <img
+          v-else
+          src="@/assets/svg/accepted-black.svg"
+          alt="checked"
+          class="w-8 h-8"
+          @click="removeClientAsBeneficiary"
+        />
+        <p>Adicionar cliente como beneficiário(a)</p>
+      </div>
       <div
         v-if="showBeneficiaryForm"
         class="w-full flex items-center justify-between"
       >
         <PersonForm v-model:data="currentBeneficiary" />
         <img
+          v-if="beneficiaryFilled"
           src="@/assets/svg/accept-black.svg"
           alt="add beneficiary"
           class="w-8 h-8"
           @click="confirmBeneficiary"
+        />
+      </div>
+    </div>
+    <!-- Add service -->
+    <div class="mb-8">
+      <div class="w-full flex items-center justify-between">
+        <p>Serviço</p>
+        <img
+          v-if="!data.service"
+          src="@/assets/svg/add-black.svg"
+          alt="add beneficiary"
+          class="w-8 h-8"
+          @click="() => (showServiceForm = true)"
+        />
+      </div>
+      <div
+        v-if="showServiceForm"
+        class="w-full flex items-center justify-between"
+      >
+        <ServiceForm v-model:data="service" />
+        <img
+          v-if="serviceFilled"
+          src="@/assets/svg/accept-black.svg"
+          alt="add beneficiary"
+          class="w-8 h-8"
+          @click="confirmService"
+        />
+      </div>
+      <div
+        v-else-if="data.service"
+        class="w-full flex items-center justify-between"
+      >
+        <div class="bg-blue-100 p-4 mb-4 rounded-2xl">
+          {{ data.service }}
+        </div>
+        <img
+          src="@/assets/svg/trash-black.svg"
+          alt="remove service"
+          class="w-8 h-8"
+          @click="removeService"
         />
       </div>
     </div>
@@ -61,13 +124,15 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import PersonForm from '@/components/PersonForm.vue'
+import ServiceForm from '@/components/ServiceForm.vue'
 export default {
   components: {
-    PersonForm
+    PersonForm,
+    ServiceForm
   },
   setup() {
     const store = useStore()
@@ -76,10 +141,11 @@ export default {
     const data = ref({
       name: null,
       address: null,
-      fiscalNumber: null
+      fiscalNumber: null,
+      beneficiaries: null,
+      sevice: null
     })
 
-    const beneficiaries = ref([])
     const showBeneficiaryForm = ref(false)
     const currentBeneficiary = ref({
       name: null,
@@ -91,7 +157,9 @@ export default {
       store.dispatch('addClient', {
         name: data.value.name,
         address: data.value.address,
-        fiscalNumber: data.value.fiscalNumber
+        fiscalNumber: data.value.fiscalNumber,
+        beneficiaries: data.value.beneficiaries,
+        service: data.value.service
       })
       router.push('/clients')
     }
@@ -135,15 +203,85 @@ export default {
       )
     }
 
+    // Client as beneficiary
+    const clientAsBeneficiary = ref(false)
+
+    const addClientAsBeneficiary = () => {
+      data.value.beneficiaries.push({
+        name: data.value.name,
+        address: data.value.address,
+        fiscalNumber: data.value.fiscalNumber
+      })
+      clientAsBeneficiary.value = true
+    }
+
+    const removeClientAsBeneficiary = () => {
+      data.value.beneficiaries = data.value.beneficiaries.filter((b) => {
+        return b.fiscalNumber !== data.value.fiscalNumber
+      })
+      clientAsBeneficiary.value = false
+    }
+
+    const clientFilled = computed(() => {
+      return data.value.name && data.value.address && data.value.fiscalNumber
+    })
+
+    const beneficiaryFilled = computed(() => {
+      return (
+        currentBeneficiary.value.name &&
+        currentBeneficiary.value.address &&
+        currentBeneficiary.value.fiscalNumber
+      )
+    })
+
+    // Service form
+    const service = ref({
+      type: null,
+      regime: null,
+      shifts: null,
+      beginning: null,
+      duration: null
+    })
+
+    const showServiceForm = ref(false)
+
+    const serviceFilled = computed(() => {
+      return (
+        service.value.type &&
+        service.value.regime &&
+        service.value.shifts &&
+        service.value.beginning &&
+        service.value.duration
+      )
+    })
+
+    const confirmService = () => {
+      data.value.service = service.value
+      showServiceForm.value = false
+    }
+
+    const removeService = () => {
+      data.value.service = null
+    }
+
     return {
       add,
       data,
-      beneficiaries,
       nextBeneficiary,
       currentBeneficiary,
       showBeneficiaryForm,
       confirmBeneficiary,
-      removeBeneficiary
+      removeBeneficiary,
+      clientAsBeneficiary,
+      addClientAsBeneficiary,
+      removeClientAsBeneficiary,
+      clientFilled,
+      service,
+      showServiceForm,
+      beneficiaryFilled,
+      serviceFilled,
+      confirmService,
+      removeService
     }
   }
 }

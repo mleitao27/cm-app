@@ -34,7 +34,6 @@ export default {
       commit('SET_CLIENT', client)
     },
     fetchClient({ commit }, clientId) {
-      console.log(clientId)
       return axios
         .get(process.env.VUE_APP_SERVER_URL + 'api/clients/' + clientId)
         .then(({ data }) => {
