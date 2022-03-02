@@ -40,6 +40,18 @@ export default {
           commit('SET_CLIENT', data)
           return data
         })
+    },
+    updateClient({ commit }, newClient) {
+      return axios
+        .put(process.env.VUE_APP_SERVER_URL + 'api/clients/' + newClient._id, {
+          name: newClient.name,
+          address: newClient.address,
+          fiscalNumber: newClient.fiscalNumber
+        })
+        .then(({ data }) => {
+          commit('SET_CLIENT', data)
+          return data
+        })
     }
   },
   getters: {}

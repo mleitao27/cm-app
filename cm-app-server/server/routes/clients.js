@@ -62,7 +62,13 @@ router.post('/', async (req, res) => {
     res.status(200).send(clientId);
 });
 
-// Delete clients
+// Update client
+router.put('/:id', async (req, res) => {
+    await db.updateDocument('clients', {_id: new mongodb.ObjectId(req.params.id)}, req.body);
+    res.status(200).send();
+});
+
+// Delete client
 router.delete('/:id', (req, res) => {
     res.send('hello');
 });

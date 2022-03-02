@@ -1,13 +1,16 @@
 <template>
   <div class="pt-4 px-4" v-if="client">
-    <router-link class="flex items-center mb-8" to="/clients">
-      <img
-        src="@/assets/svg/up-arrow-black.svg"
-        alt="see client"
-        class="w-4 h-3 transform -rotate-90 mr-4"
-      />
-      <p>Detalhes do clientes</p>
-    </router-link>
+    <div class="flex justify-between items-center mb-8">
+      <router-link class="flex items-center" to="/clients">
+        <img
+          src="@/assets/svg/up-arrow-black.svg"
+          alt="see client"
+          class="w-4 h-3 transform -rotate-90 mr-4"
+        />
+        <p>Detalhes do cliente</p>
+      </router-link>
+      <router-link :to="'/clients/edit/' + client._id"> Editar </router-link>
+    </div>
     <Table :data="personTable(client)" />
     <!-- Beneficiaries' details -->
     <div v-if="client.beneficiaries">
