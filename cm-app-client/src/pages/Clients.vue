@@ -1,13 +1,6 @@
 <template>
   <div class="pt-4 px-4">
-    <router-link class="flex items-center mb-8" to="/">
-      <img
-        src="@/assets/svg/up-arrow-black.svg"
-        alt="see client"
-        class="w-4 h-3 transform -rotate-90 mr-4"
-      />
-      <p>Clientes</p>
-    </router-link>
+    <Back handler="Clientes" :route="-1" />
     <div class="flex items-center mb-8">
       <router-link to="/clients/add" class="">
         <img
@@ -41,7 +34,9 @@
 import { useStore } from 'vuex'
 import { computed, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
+import Back from '@/components/Back.vue'
 export default {
+  components: { Back },
   setup() {
     const store = useStore()
     const router = useRouter()
