@@ -20,7 +20,7 @@
     </div>
     <div
       v-if="minimized"
-      class="w-full flex justify-center rounded-b-2xl bg-blue-50 py-2"
+      class="w-full lg:w-1/2 flex justify-center rounded-b-2xl bg-blue-50 py-2"
     >
       <img
         src="@/assets/svg/up-arrow-black.svg"

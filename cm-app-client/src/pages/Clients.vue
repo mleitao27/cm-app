@@ -14,7 +14,7 @@
       <div
         v-for="(client, index) of clients"
         :key="index"
-        class="p-4 mb-4 bg-blue-100 rounded-2xl flex items-center justify-between"
+        class="p-4 mb-4 bg-blue-100 rounded-2xl flex items-center justify-between cursor-pointer"
         @click="seeDetails(client)"
       >
         <p>
