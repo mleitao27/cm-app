@@ -27,7 +27,7 @@ router.post('/', async (req, res) => {
 
 // Delete clients
 router.delete('/', (req, res) => {
-    res.send('hello');
+    res.status(200).send('delete beneficiary');
 });
 
 module.exports = router;

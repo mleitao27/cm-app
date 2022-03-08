@@ -70,7 +70,7 @@ router.put('/:id', async (req, res) => {
 
 // Delete client
 router.delete('/:id', (req, res) => {
-    res.send('hello');
+    res.status(200).send('delete client');
 });
 
 module.exports = router;

@@ -1,6 +1,6 @@
 <template>
   <div class="pt-4 px-4">
-    <Back handler="Clientes" :route="-1" />
+    <Back handler="Clientes" route="/" />
     <div class="flex items-center mb-8">
       <router-link to="/clients/add" class="">
         <img

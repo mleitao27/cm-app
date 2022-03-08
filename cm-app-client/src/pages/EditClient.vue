@@ -12,6 +12,21 @@
       <p>Editar cliente</p>
     </router-link>
     <PersonForm v-model:data="data" />
+    <!-- <router-link :to="'/clients/edit/' + client._id + '/beneficiaries'">
+      <p>Editar beneficiários</p>
+    </router-link> -->
+    <router-link
+      v-if="client.service"
+      :to="'/services/edit/' + client.service._id"
+      class="flex items-center"
+    >
+      <p>Editar serviço</p>
+      <img
+        src="@/assets/svg/up-arrow-black.svg"
+        alt="go"
+        class="transform rotate-90 w-4 h-3"
+      />
+    </router-link>
     <div class="w-full flex justify-center">
       <button
         @click="update"
@@ -37,7 +52,8 @@ export default {
     const data = ref(null)
 
     onBeforeMount(async () => {
-      await store.dispatch('fetchClient', route.params.id)
+      if (!store.state.clients.client)
+        await store.dispatch('fetchClient', route.params.id)
       data.value = client.value
     })
 

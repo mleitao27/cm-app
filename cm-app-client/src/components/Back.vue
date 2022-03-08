@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center mb-8" @click="routerHandler(route)">
+  <div class="flex items-center mb-8 cursor-pointer" @click="routerHandler">
     <img
       src="@/assets/svg/up-arrow-black.svg"
       alt="go back"
@@ -13,13 +13,13 @@ import { useRouter } from 'vue-router'
 export default {
   props: {
     handler: { type: String, default: '' },
-    route: [String, Number]
+    to: [String, Number]
   },
-  setup() {
+  setup(props) {
     const router = useRouter()
-    const routerHandler = async (route) => {
-      if (typeof route === 'string') router.push(route)
-      else if (typeof route == 'number') router.go(route)
+    const routerHandler = () => {
+      if (typeof props.to === 'string') router.push(props.to)
+      else if (typeof props.to == 'number') router.go(props.to)
     }
     return {
       routerHandler
