@@ -1,14 +1,16 @@
 <template>
-  <div class="pt-4 px-4" v-if="service && data">
-    <Back handler="Editar serviço" :to="-1" />
-    <ServiceForm v-model:data="data" />
-    <div class="w-full flex justify-center">
-      <button
-        @click="update"
-        class="px-4 py-2 rounded-2xl bg-blue-300 font-bold"
-      >
-        Atualizar
-      </button>
+  <div class="page">
+    <div class="content" v-if="service && data">
+      <Back handler="Editar serviço" :to="-1" class="mb-8" />
+      <ServiceForm v-model:data="data" />
+      <div class="w-full flex justify-center">
+        <button
+          @click="update"
+          class="px-4 py-2 rounded-2xl bg-blue-300 font-bold"
+        >
+          Atualizar
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -18,6 +20,7 @@ import { computed, onBeforeMount } from '@vue/runtime-core'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { ref } from 'vue'
+
 import ServiceForm from '@/components/ServiceForm.vue'
 import Back from '@/components/Back.vue'
 export default {
@@ -43,7 +46,7 @@ export default {
 
     const update = async () => {
       await store.dispatch('updateService', data.value)
-      router.push('/clients/')
+      router.push('/clients/details/' + service.value.clientId)
     }
 
     return {

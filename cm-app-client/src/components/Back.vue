@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center mb-8 cursor-pointer" @click="routerHandler">
+  <div class="flex items-center cursor-pointer" @click="routerHandler">
     <img
       src="@/assets/svg/up-arrow-black.svg"
       alt="go back"

@@ -1,124 +1,122 @@
 <template>
-  <div class="pt-4 px-4">
-    <router-link class="flex items-center mb-8" to="/clients">
-      <img
-        src="@/assets/svg/up-arrow-black.svg"
-        alt="see client"
-        class="w-4 h-3 transform -rotate-90 mr-4"
-      />
-      <p>Adicionar cliente</p>
-    </router-link>
-    <!-- Client -->
-    <div class="mb-8">
-      <p>Dados do cliente</p>
-      <PersonForm v-model:data="data" />
-    </div>
-    <!-- Beneficiaries -->
-    <div class="mb-8">
-      <div class="w-full flex items-center justify-between">
-        <p>Beneficiários</p>
-        <img
-          src="@/assets/svg/add-black.svg"
-          alt="add beneficiary"
-          class="w-8 h-8"
-          @click="nextBeneficiary"
-        />
+  <div class="page">
+    <div class="content">
+      <Back handler="Adicionar cliente" to="/clients" class="mb-8" />
+      <!-- Client -->
+      <div class="mb-8">
+        <p>Dados do cliente</p>
+        <PersonForm v-model:data="data" />
       </div>
-      <!-- Beneficiaries list -->
-      <div
-        v-for="beneficiary in data.beneficiaries"
-        :key="beneficiary.fiscalNumber"
-        class="w-full flex items-center justify-between"
-      >
-        <div class="bg-blue-100 p-4 mb-4 rounded-2xl">
-          {{ beneficiary }}
+      <!-- Beneficiaries -->
+      <div class="mb-8">
+        <div class="w-full flex items-center justify-between">
+          <p>Beneficiários</p>
+          <img
+            src="@/assets/svg/add-black.svg"
+            alt="add beneficiary"
+            class="w-6 h-6 cursor-pointer"
+            @click="nextBeneficiary"
+          />
         </div>
-        <img
-          src="@/assets/svg/trash-black.svg"
-          alt="remove beneficiary"
-          class="w-8 h-8"
-          @click="removeBeneficiary(beneficiary.fiscalNumber)"
-        />
-      </div>
-      <!-- Include client as beneficiary checkbox -->
-      <div
-        v-if="data.beneficiaries && data.beneficiaries.length && clientFilled"
-        class="flex items-center"
-      >
-        <img
-          v-if="!clientAsBeneficiary"
-          src="@/assets/svg/accept-black.svg"
-          alt="check"
-          class="w-8 h-8"
-          @click="addClientAsBeneficiary"
-        />
-        <img
-          v-else
-          src="@/assets/svg/accepted-black.svg"
-          alt="checked"
-          class="w-8 h-8"
-          @click="removeClientAsBeneficiary"
-        />
-        <p>Adicionar cliente como beneficiário(a)</p>
-      </div>
-      <div
-        v-if="showBeneficiaryForm"
-        class="w-full flex items-center justify-between"
-      >
-        <PersonForm v-model:data="currentBeneficiary" />
-        <img
-          v-if="beneficiaryFilled"
-          src="@/assets/svg/accept-black.svg"
-          alt="add beneficiary"
-          class="w-8 h-8"
-          @click="confirmBeneficiary"
-        />
-      </div>
-    </div>
-    <!-- Add service -->
-    <div class="mb-8">
-      <div class="w-full flex items-center justify-between">
-        <p>Serviço</p>
-        <img
-          v-if="!data.service"
-          src="@/assets/svg/add-black.svg"
-          alt="add beneficiary"
-          class="w-8 h-8"
-          @click="() => (showServiceForm = true)"
-        />
-      </div>
-      <div
-        v-if="showServiceForm"
-        class="w-full flex items-center justify-between"
-      >
-        <ServiceForm v-model:data="service" />
-        <img
-          v-if="serviceFilled"
-          src="@/assets/svg/accept-black.svg"
-          alt="add beneficiary"
-          class="w-8 h-8"
-          @click="confirmService"
-        />
-      </div>
-      <div
-        v-else-if="data.service"
-        class="w-full flex items-center justify-between"
-      >
-        <div class="bg-blue-100 p-4 mb-4 rounded-2xl">
-          {{ data.service }}
+        <!-- Beneficiaries list -->
+        <div
+          v-for="beneficiary in data.beneficiaries"
+          :key="beneficiary.fiscalNumber"
+          class="w-full flex items-center justify-between"
+        >
+          <div class="bg-blue-100 p-4 mb-4 rounded-2xl">
+            {{ beneficiary }}
+          </div>
+          <img
+            src="@/assets/svg/trash-black.svg"
+            alt="remove beneficiary"
+            class="w-8 h-8"
+            @click="removeBeneficiary(beneficiary.fiscalNumber)"
+          />
         </div>
-        <img
-          src="@/assets/svg/trash-black.svg"
-          alt="remove service"
-          class="w-8 h-8"
-          @click="removeService"
-        />
+        <!-- Include client as beneficiary checkbox -->
+        <div
+          v-if="data.beneficiaries && data.beneficiaries.length && clientFilled"
+          class="flex items-center"
+        >
+          <img
+            v-if="!clientAsBeneficiary"
+            src="@/assets/svg/accept-black.svg"
+            alt="check"
+            class="w-6 h-6 mr-2"
+            @click="addClientAsBeneficiary"
+          />
+          <img
+            v-else
+            src="@/assets/svg/accepted-black.svg"
+            alt="checked"
+            class="w-6 h-6 mr-2"
+            @click="removeClientAsBeneficiary"
+          />
+          <p>Adicionar cliente como beneficiário(a)</p>
+        </div>
+        <div
+          v-if="showBeneficiaryForm"
+          class="w-full flex items-center justify-between"
+        >
+          <PersonForm v-model:data="currentBeneficiary" />
+          <img
+            v-if="beneficiaryFilled"
+            src="@/assets/svg/accept-black.svg"
+            alt="add beneficiary"
+            class="w-6 h-6"
+            @click="confirmBeneficiary"
+          />
+        </div>
       </div>
-    </div>
-    <div class="w-full flex justify-center">
-      <button @click="add" class="px-4 py-2 rounded-2xl bg-blue-300 font-bold">
-        Adicionar
-      </button>
+      <!-- Add service -->
+      <div class="mb-8">
+        <div class="w-full flex items-center justify-between">
+          <p>Serviço</p>
+          <img
+            v-if="!data.service"
+            src="@/assets/svg/add-black.svg"
+            alt="add beneficiary"
+            class="w-6 h-6 cursor-pointer"
+            @click="() => (showServiceForm = true)"
+          />
+        </div>
+        <div
+          v-if="showServiceForm"
+          class="w-full flex items-center justify-between"
+        >
+          <ServiceForm v-model:data="service" />
+          <img
+            v-if="serviceFilled"
+            src="@/assets/svg/accept-black.svg"
+            alt="add beneficiary"
+            class="w-6 h-6"
+            @click="confirmService"
+          />
+        </div>
+        <div
+          v-else-if="data.service"
+          class="w-full flex items-center justify-between"
+        >
+          <div class="bg-blue-100 p-4 mb-4 rounded-2xl">
+            {{ data.service }}
+          </div>
+          <img
+            src="@/assets/svg/trash-black.svg"
+            alt="remove service"
+            class="w-8 h-8"
+            @click="removeService"
+          />
+        </div>
+      </div>
+      <div class="w-full flex justify-center">
+        <button
+          @click="add"
+          class="px-4 py-2 rounded-2xl bg-blue-300 font-bold"
+        >
+          Adicionar
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -127,12 +125,15 @@
 import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+
 import PersonForm from '@/components/PersonForm.vue'
 import ServiceForm from '@/components/ServiceForm.vue'
+import Back from '@/components/Back.vue'
 export default {
   components: {
     PersonForm,
-    ServiceForm
+    ServiceForm,
+    Back
   },
   setup() {
     const store = useStore()
@@ -150,7 +151,8 @@ export default {
     const currentBeneficiary = ref({
       name: null,
       address: null,
-      fiscalNumber: null
+      fiscalNumber: null,
+      isClient: false
     })
 
     const add = () => {
@@ -191,7 +193,8 @@ export default {
       currentBeneficiary.value = {
         name: null,
         address: null,
-        fiscalNumber: null
+        fiscalNumber: null,
+        isClient: false
       }
     }
 
@@ -210,7 +213,8 @@ export default {
       data.value.beneficiaries.push({
         name: data.value.name,
         address: data.value.address,
-        fiscalNumber: data.value.fiscalNumber
+        fiscalNumber: data.value.fiscalNumber,
+        isClient: true
       })
       clientAsBeneficiary.value = true
     }

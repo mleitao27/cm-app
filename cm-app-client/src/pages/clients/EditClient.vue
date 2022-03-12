@@ -1,39 +1,23 @@
 <template>
-  <div class="pt-4 px-4" v-if="client && data">
-    <router-link
-      class="flex items-center mb-8"
-      :to="'/clients/details/' + client._id"
-    >
-      <img
-        src="@/assets/svg/up-arrow-black.svg"
-        alt="see client"
-        class="w-4 h-3 transform -rotate-90 mr-4"
+  <div class="page">
+    <div class="content" v-if="client && data">
+      <Back
+        handler="Editar cliente"
+        :to="'/clients/details/' + client._id"
+        class="mb-8"
       />
-      <p>Editar cliente</p>
-    </router-link>
-    <PersonForm v-model:data="data" />
-    <!-- <router-link :to="'/clients/edit/' + client._id + '/beneficiaries'">
+      <PersonForm v-model:data="data" />
+      <!-- <router-link :to="'/clients/edit/' + client._id + '/beneficiaries'">
       <p>Editar beneficiários</p>
     </router-link> -->
-    <router-link
-      v-if="client.service"
-      :to="'/services/edit/' + client.service._id"
-      class="flex items-center"
-    >
-      <p>Editar serviço</p>
-      <img
-        src="@/assets/svg/up-arrow-black.svg"
-        alt="go"
-        class="transform rotate-90 w-4 h-3"
-      />
-    </router-link>
-    <div class="w-full flex justify-center">
-      <button
-        @click="update"
-        class="px-4 py-2 rounded-2xl bg-blue-300 font-bold"
-      >
-        Atualizar
-      </button>
+      <div class="w-full flex justify-center">
+        <button
+          @click="update"
+          class="px-4 py-2 rounded-2xl bg-blue-300 font-bold"
+        >
+          Atualizar
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -42,9 +26,11 @@
 import { computed, onBeforeMount, ref } from '@vue/runtime-core'
 import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
+
 import PersonForm from '@/components/PersonForm.vue'
+import Back from '@/components/Back.vue'
 export default {
-  components: { PersonForm },
+  components: { PersonForm, Back },
   setup() {
     const store = useStore()
     const route = useRoute()

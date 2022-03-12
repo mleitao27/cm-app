@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/pages/Home.vue'
-import Clients from '@/pages/Clients.vue'
-import AddClient from '@/pages/AddClient.vue'
-import ClientDetails from '@/pages/ClientDetails.vue'
-import EditClient from '@/pages/EditClient.vue'
-import EditBeneficiaries from '@/pages/EditBeneficiaries.vue'
-import EditService from '@/pages/EditService.vue'
+import Clients from '@/pages/clients/Clients.vue'
+import AddClient from '@/pages/clients/AddClient.vue'
+import ClientDetails from '@/pages/clients/ClientDetails.vue'
+import EditClient from '@/pages/clients/EditClient.vue'
+import EditBeneficiaries from '@/pages/beneficiaries/EditBeneficiaries.vue'
+import EditService from '@/pages/services/EditService.vue'
 
 const routes = [
   {

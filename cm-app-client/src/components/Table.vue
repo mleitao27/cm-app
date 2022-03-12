@@ -1,8 +1,8 @@
 <template>
-  <div @click="toggle">
+  <div>
     <div
-      class="w-full lg:w-1/2 bg-blue-100 py-4"
-      :class="minimized ? 'rounded-t-2xl' : 'rounded-2xl'"
+      class="w-full bg-blue-100 py-4"
+      :class="minimizable ? 'rounded-t-2xl' : 'rounded-2xl'"
     >
       <div v-for="(d, index) in data" :key="index">
         <div
@@ -19,13 +19,22 @@
       </div>
     </div>
     <div
-      v-if="minimized"
-      class="w-full lg:w-1/2 flex justify-center rounded-b-2xl bg-blue-50 py-2"
+      v-if="minimizable"
+      class="w-full flex justify-center rounded-b-2xl bg-blue-50 py-2"
+      @click="toggle"
+      :class="{ 'cursor-pointer': minimizable }"
     >
       <img
+        v-if="minimized"
         src="@/assets/svg/up-arrow-black.svg"
         alt="down"
         class="transform rotate-180 w-4 h-3"
+      />
+      <img
+        v-else
+        src="@/assets/svg/up-arrow-black.svg"
+        alt="down"
+        class="w-4 h-3"
       />
     </div>
   </div>

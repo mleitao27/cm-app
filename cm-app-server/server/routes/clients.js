@@ -35,6 +35,7 @@ router.post('/', async (req, res) => {
                 name: b.name,
                 address: b.address,
                 fiscalNumber: b.fiscalNumber,
+                isClient: b.isClient,
                 createdAt: new Date()
             })
         })
@@ -44,6 +45,7 @@ router.post('/', async (req, res) => {
             name: req.body.name,
             address: req.body.address,
             fiscalNumber: req.body.fiscalNumber,
+            isClient: true,
             createdAt: new Date()
         })
     }
