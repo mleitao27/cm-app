@@ -10,9 +10,11 @@ app.use(cors());
 
 const clients = require('./routes/clients');
 const services = require('./routes/services');
+const beneficiaries = require('./routes/beneficiaries');
 
 app.use('/api/clients', clients);
 app.use('/api/services', services);
+app.use('/api/beneficiaries', beneficiaries);
 
 const port = process.env.PORT || 5000;
 
