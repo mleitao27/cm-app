@@ -11,16 +11,12 @@
         <div class="flex items-center justify-between my-4">
           <p>Serviço</p>
           <div class="flex">
-            <router-link
-              :to="'/services/edit/' + client.service._id"
-              class="mr-2"
-            >
-              <img
-                src="@/assets/svg/edit-black.svg"
-                alt="edit"
-                class="w-4 h-4 cursor-pointer"
-              />
-            </router-link>
+            <img
+              @click="editService"
+              src="@/assets/svg/edit-black.svg"
+              alt="edit"
+              class="w-4 h-4 cursor-pointer mr-2"
+            />
             <router-link to="/" class="flex items-center">
               <img
                 src="@/assets/svg/add-black.svg"
@@ -32,6 +28,7 @@
         </div>
         <Table :data="serviceTable(client.service)" />
       </div>
+      <AddService v-else v-model:clientService="client.service" class="mt-8" />
       <!-- Beneficiaries' details -->
       <div v-if="client.beneficiaries">
         <div class="flex items-center justify-between my-4">
@@ -62,20 +59,24 @@
 <script>
 import { computed, onBeforeMount } from '@vue/runtime-core'
 import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import useGlobalHelpers from '@/mixins/useGlobalHelpers.js'
 
 import Table from '@/components/Table.vue'
 import Back from '@/components/Back.vue'
+import AddService from '@/components/AddService.vue'
+
 export default {
   components: {
     Table,
-    Back
+    Back,
+    AddService
   },
   setup() {
     const store = useStore()
     const route = useRoute()
+    const router = useRouter()
     const { dateTimeFormatting, personTable, serviceTable } = useGlobalHelpers()
 
     onBeforeMount(async () => {
@@ -86,11 +87,18 @@ export default {
       return store.state.clients.client
     })
 
+    const editService = async () => {
+      if (!client.value.service)
+        await store.dispatch('fetchClient', route.params.id)
+      router.push('/services/edit/' + client.value.service._id)
+    }
+
     return {
       client,
       dateTimeFormatting,
       personTable,
-      serviceTable
+      serviceTable,
+      editService
     }
   }
 }
