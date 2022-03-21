@@ -8,10 +8,18 @@
         <PersonForm v-model:data="data" />
       </div>
       <!-- Add service -->
-      <AddService v-if="clientFilled" v-model:clientService="data.service" />
+      <AddService
+        v-if="clientFilled"
+        :clientService="data.service"
+        @set="setService"
+      />
       <!-- Beneficiaries -->
       <!-- Receives all data bc it needs beneficiaries and client details -->
-      <AddBeneficiaries v-if="clientFilled" v-model:client="data" />
+      <AddBeneficiaries
+        v-if="clientFilled"
+        :client="data"
+        @set="setBeneficiaries"
+      />
       <div class="w-full flex justify-center">
         <button
           @click="add"
@@ -68,10 +76,20 @@ export default {
       return data.value.name && data.value.address && data.value.fiscalNumber
     })
 
+    const setService = (newService) => {
+      data.value.service = newService
+    }
+
+    const setBeneficiaries = (newBeneficiaries) => {
+      data.value.beneficiaries = newBeneficiaries
+    }
+
     return {
       add,
       data,
-      clientFilled
+      clientFilled,
+      setService,
+      setBeneficiaries
     }
   }
 }

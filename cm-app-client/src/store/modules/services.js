@@ -18,6 +18,14 @@ export default {
           return data
         })
     },
+    // eslint-disable-next-line no-empty-pattern
+    addService({}, data) {
+      return axios
+        .post(process.env.VUE_APP_SERVER_URL + 'api/services', data)
+        .then(({ data }) => {
+          return data
+        })
+    },
     updateService({ commit }, newService) {
       return axios
         .put(

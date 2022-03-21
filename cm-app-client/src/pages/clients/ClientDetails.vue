@@ -28,7 +28,12 @@
         </div>
         <Table :data="serviceTable(client.service)" />
       </div>
-      <AddService v-else v-model:clientService="client.service" class="mt-8" />
+      <AddService
+        v-else
+        :clientService="client.service"
+        @set="setService"
+        class="mt-8"
+      />
       <!-- Beneficiaries' details -->
       <div v-if="client.beneficiaries">
         <div class="flex items-center justify-between my-4">
@@ -93,12 +98,21 @@ export default {
       router.push('/services/edit/' + client.value.service._id)
     }
 
+    const setService = async (newService) => {
+      await store.dispatch('addService', {
+        clientId: route.params.id,
+        service: newService
+      })
+      await store.dispatch('fetchClient', route.params.id)
+    }
+
     return {
       client,
       dateTimeFormatting,
       personTable,
       serviceTable,
-      editService
+      editService,
+      setService
     }
   }
 }

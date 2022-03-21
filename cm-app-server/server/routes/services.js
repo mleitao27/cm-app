@@ -14,6 +14,22 @@ router.get('/:id', async (req, res) => {
     res.status(200).send(await db.getFirstDocument('services', {_id: new mongodb.ObjectId(req.params.id)}));
 });
 
+// add service
+router.post('/', async (req, res) => {
+    if(req.body.service) {
+        await db.insertDocument('services', {
+            clientId: new mongodb.ObjectId(req.body.clientId),
+            type: req.body.service.type,
+            regime: req.body.service.regime,
+            shifts: req.body.service.shifts,
+            beginning: req.body.service.beginning,
+            duration: req.body.service.duration,
+            createdAt: new Date()
+        })
+        res.status(200).send();
+    } else res.status(500).send();
+});
+
 // Update services
 router.put('/:id', async (req, res) => {
     await db.updateDocument('services', {_id: new mongodb.ObjectId(req.params.id)}, req.body);

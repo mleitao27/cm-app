@@ -42,7 +42,6 @@
 
 <script>
 import { ref, computed } from 'vue'
-import { useVModel } from 'vue-composable'
 
 import ServiceForm from '@/components/ServiceForm.vue'
 
@@ -56,8 +55,8 @@ export default {
       default: () => {}
     }
   },
-  setup(props) {
-    const dataState = useVModel(props, 'clientService')
+  emits: ['set'],
+  setup(props, { emit }) {
     const showServiceForm = ref(false)
     const service = ref(
       props.clientService ?? {
@@ -90,12 +89,12 @@ export default {
     })
 
     const confirmService = () => {
-      dataState.value = service.value
+      emit('set', service.value)
       showServiceForm.value = false
     }
 
     const removeService = () => {
-      dataState.value = null
+      emit('set', null)
       service.value = {
         type: null,
         regime: null,
@@ -111,8 +110,7 @@ export default {
       serviceFilled,
       confirmService,
       removeService,
-      serviceEmpty,
-      dataState
+      serviceEmpty
     }
   }
 }

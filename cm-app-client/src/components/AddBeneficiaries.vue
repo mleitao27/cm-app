@@ -11,7 +11,7 @@
     </div>
     <!-- Beneficiaries list -->
     <div
-      v-for="beneficiary in dataState.beneficiaries"
+      v-for="beneficiary in client.beneficiaries"
       :key="beneficiary._id"
       class="w-full flex items-center justify-between"
     >
@@ -28,8 +28,8 @@
     <!-- Include client as beneficiary checkbox -->
     <div
       v-if="
-        dataState.beneficiaries &&
-        dataState.beneficiaries.length &&
+        client.beneficiaries &&
+        client.beneficiaries.length &&
         !clientAlreadyBeneficiary &&
         clientFilled
       "
@@ -39,14 +39,14 @@
         v-if="!clientAsBeneficiary"
         src="@/assets/svg/accept-black.svg"
         alt="check"
-        class="w-6 h-6 mr-2"
+        class="w-6 h-6 mr-2 cursor-pointer"
         @click="addClientAsBeneficiary"
       />
       <img
         v-else
         src="@/assets/svg/accepted-black.svg"
         alt="checked"
-        class="w-6 h-6 mr-2"
+        class="w-6 h-6 mr-2 cursor-pointer"
         @click="removeClientAsBeneficiary"
       />
       <p>Adicionar cliente como beneficiário(a)</p>
@@ -69,7 +69,6 @@
 
 <script>
 import { ref, computed } from 'vue'
-import { useVModel } from 'vue-composable'
 
 import PersonForm from '@/components/PersonForm.vue'
 
@@ -83,8 +82,13 @@ export default {
       default: () => {}
     }
   },
-  setup(props) {
-    const dataState = useVModel(props, 'client')
+  emits: ['set'],
+  setup(props, { emit }) {
+    const beneficiaries = ref(
+      props.client.beneficiaries && props.client.beneficiaries.length
+        ? props.client.beneficiaries
+        : null
+    )
     const showBeneficiaryForm = ref(false)
     const currentBeneficiary = ref({
       name: null,
@@ -98,9 +102,9 @@ export default {
     }
 
     const confirmBeneficiary = () => {
-      if (dataState.value.beneficiaries) {
+      if (beneficiaries.value) {
         // Search for beneficiary with same fiscal number
-        const found = dataState.value.beneficiaries.find(
+        const found = beneficiaries.value.find(
           (b) => b.fiscalNumber === currentBeneficiary.value.fiscalNumber
         )
         if (found) {
@@ -110,8 +114,10 @@ export default {
           return
         }
         // Add beneficiary
-        dataState.value.beneficiaries.push(currentBeneficiary.value)
-      } else dataState.value.beneficiaries = [currentBeneficiary.value]
+        beneficiaries.value.push(currentBeneficiary.value)
+      } else beneficiaries.value = [currentBeneficiary.value]
+
+      emit('set', beneficiaries)
 
       // Hide form
       showBeneficiaryForm.value = false
@@ -126,42 +132,39 @@ export default {
     }
 
     const removeBeneficiary = (fiscalNumber) => {
-      dataState.value.beneficiaries = dataState.value.beneficiaries.filter(
-        (beneficiary) => {
-          return beneficiary.fiscalNumber !== fiscalNumber
-        }
-      )
-      if (fiscalNumber === dataState.value.fiscalNumber)
+      beneficiaries.value = beneficiaries.value.filter((beneficiary) => {
+        return beneficiary.fiscalNumber !== fiscalNumber
+      })
+      if (fiscalNumber === props.client.fiscalNumber)
         clientAsBeneficiary.value = false
+      emit('set', beneficiaries)
     }
 
     // Client as beneficiary
     const clientAsBeneficiary = ref(false)
 
     const addClientAsBeneficiary = () => {
-      dataState.value.beneficiaries.push({
-        name: dataState.value.name,
-        address: dataState.value.address,
-        fiscalNumber: dataState.value.fiscalNumber,
+      beneficiaries.value.push({
+        name: props.client.name,
+        address: props.client.address,
+        fiscalNumber: props.client.fiscalNumber,
         isClient: true
       })
       clientAsBeneficiary.value = true
+      emit('set', beneficiaries)
     }
 
     const removeClientAsBeneficiary = () => {
-      dataState.value.beneficiaries = dataState.value.beneficiaries.filter(
-        (b) => {
-          return b.fiscalNumber !== dataState.value.fiscalNumber
-        }
-      )
+      beneficiaries.value = beneficiaries.value.filter((b) => {
+        return b.fiscalNumber !== props.client.fiscalNumber
+      })
       clientAsBeneficiary.value = false
+      emit('set', beneficiaries)
     }
 
     const clientFilled = computed(() => {
       return (
-        dataState.value.name &&
-        dataState.value.address &&
-        dataState.value.fiscalNumber
+        props.client.name && props.client.address && props.client.fiscalNumber
       )
     })
 
@@ -174,8 +177,8 @@ export default {
     })
 
     const clientAlreadyBeneficiary = computed(() => {
-      return dataState.value.beneficiaries.find(
-        (b) => b.fiscalNumber === dataState.value.fiscalNumber
+      return beneficiaries.value.find(
+        (b) => b.fiscalNumber === props.client.fiscalNumber
       )
     })
 
@@ -190,7 +193,6 @@ export default {
       removeClientAsBeneficiary,
       clientFilled,
       beneficiaryFilled,
-      dataState,
       clientAlreadyBeneficiary
     }
   }
