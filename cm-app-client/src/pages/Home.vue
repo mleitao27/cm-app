@@ -11,13 +11,17 @@
             class="w-4 h-3 transform rotate-90 ml-4"
           />
         </router-link>
+        <Button handler="Counter" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+import Button from '../components/Button.vue'
+export default {
+  components: { Button }
+}
 </script>
 
 <style lang="scss" scoped></style>
