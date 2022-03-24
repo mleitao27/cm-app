@@ -11,7 +11,6 @@
             class="w-4 h-3 transform rotate-90 ml-4"
           />
         </router-link>
-        <Button handler="Counter" />
       </div>
     </div>
   </div>
@@ -20,7 +19,7 @@
 <script>
 import Button from '../components/Button.vue'
 export default {
-  components: { Button }
+  components: {}
 }
 </script>
 
