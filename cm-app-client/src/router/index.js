@@ -6,6 +6,7 @@ import ClientDetails from '@/pages/clients/ClientDetails.vue'
 import EditClient from '@/pages/clients/EditClient.vue'
 import EditBeneficiaries from '@/pages/beneficiaries/EditBeneficiaries.vue'
 import EditService from '@/pages/services/EditService.vue'
+import ServiceHistory from '@/pages/services/ServiceHistory.vue'
 
 const routes = [
   {
@@ -42,6 +43,11 @@ const routes = [
     path: '/services/edit/:id',
     name: 'services-edit',
     component: EditService
+  },
+  {
+    path: '/clients/:id/service-history',
+    name: 'clients-service-history',
+    component: ServiceHistory
   }
 ]
 

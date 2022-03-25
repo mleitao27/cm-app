@@ -84,7 +84,7 @@ var updateDocument = async (collectionName, search, updatedDocument) => {
     // Loads collection
     const collection = await loadCollection(collectionName);
     // Turns collection into array
-    const result = await collection.find().toArray();
+    const result = await collection.find(search).toArray();
     // If collection not empty
     if (result.length > 0)
         // Update wanted document 

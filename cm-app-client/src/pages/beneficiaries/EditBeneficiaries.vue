@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div class="content" v-if="beneficiaries && data">
-      <Back handler="Edit beneficiários" :to="-1" class="mb-8" />
+      <Back handler="Editar beneficiários" :to="-1" class="mb-8" />
       <div class="flex flex-col">
         <div
           v-for="(beneficiary, index) in beneficiaries"
@@ -10,6 +10,17 @@
         >
           <div class="flex justify-between" v-if="beneficiary.isClient">
             <Table :data="personTable(beneficiary)" class="mb-4 flex-grow" />
+            <div class="flex items-center">
+              <img
+                src="@/assets/svg/trash-black.svg"
+                alt="remove beneficiary"
+                class="w-8 h-8 cursor-pointer"
+                @click="deleteBeneficiary(beneficiary._id)"
+              />
+            </div>
+          </div>
+          <div v-else class="flex items-center justify-between">
+            <PersonForm v-model:data="data[index]" />
             <img
               src="@/assets/svg/trash-black.svg"
               alt="remove beneficiary"
@@ -17,7 +28,6 @@
               @click="deleteBeneficiary(beneficiary._id)"
             />
           </div>
-          <PersonForm v-else v-model:data="data[index]" />
         </div>
       </div>
       <div class="w-full flex justify-center">
@@ -56,8 +66,7 @@ export default {
     const { personTable } = useGlobalHelpers()
 
     onBeforeMount(async () => {
-      if (!store.state.clients.client)
-        await store.dispatch('fetchClient', route.params.id)
+      await store.dispatch('fetchClient', route.params.id)
       data.value = beneficiaries.value
     })
 
@@ -75,8 +84,12 @@ export default {
     }
 
     const deleteBeneficiary = async (beneficiaryId) => {
+      if (beneficiaries.value.length === 1) {
+        console.log('ERROR: Each client must have at least 1 beneficiary')
+        return
+      }
       await store.dispatch('deleteBeneficiary', beneficiaryId)
-      router.go(-1)
+      await store.dispatch('fetchClient', route.params.id)
     }
 
     return {

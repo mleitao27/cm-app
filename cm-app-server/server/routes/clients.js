@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     let client = await db.getFirstDocument('clients', {_id: new mongodb.ObjectId(req.params.id)})
     let beneficiaries = await db.getDocument('beneficiaries', {clientId: new mongodb.ObjectId(req.params.id)})
-    let service = await db.getFirstDocument('services', {clientId: new mongodb.ObjectId(req.params.id)})
+    let service = await db.getFirstDocument('services', {clientId: new mongodb.ObjectId(req.params.id), isActive: true})
     res.status(200).send({...client, beneficiaries, service});
 });
 
@@ -58,6 +58,7 @@ router.post('/', async (req, res) => {
             shifts: req.body.service.shifts,
             beginning: req.body.service.beginning,
             duration: req.body.service.duration,
+            isActive: true,
             createdAt: new Date()
         })
     }
@@ -73,6 +74,11 @@ router.put('/:id', async (req, res) => {
 // Delete client
 router.delete('/:id', (req, res) => {
     res.status(200).send('delete client');
+});
+
+// Get client services
+router.get('/:id/services', async (req, res) => {
+    res.status(200).send(await db.getDocument('services', {clientId: new mongodb.ObjectId(req.params.id)}));
 });
 
 module.exports = router;

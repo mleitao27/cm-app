@@ -16,13 +16,15 @@ router.get('/:id', async (req, res) => {
 
 // Add beneficiaries
 router.post('/', async (req, res) => {
-    let clientId = await db.insertDocument('beneficiaries', {
-        name: req.body.name,
-        address: req.body.address,
-        fiscalNumber: req.body.fiscalNumber,
+    let beneficiaryId = await db.insertDocument('beneficiaries', {
+        clientId:  new mongodb.ObjectId(req.body.clientId),
+        name: req.body.beneficiary.name,
+        address: req.body.beneficiary.address,
+        fiscalNumber: req.body.beneficiary.fiscalNumber,
+        isClient: req.body.beneficiary.isClient,
         createdAt: new Date()
     })
-    res.status(200).send(clientId);
+    res.status(200).send(beneficiaryId);
 });
 
 // Update beneficiary
