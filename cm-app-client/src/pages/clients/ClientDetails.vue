@@ -7,44 +7,63 @@
       </div>
       <Table :data="personTable(client)" />
       <!-- Service's details -->
-      <div v-if="client.service">
-        <div class="flex items-center justify-between my-4">
-          <p>Serviço</p>
-          <div class="flex">
+      <div class="flex items-center justify-between my-4">
+        <p>Serviço</p>
+        <div class="flex items-center">
+          <img
+            @click="editService"
+            src="@/assets/svg/edit-black.svg"
+            alt="edit"
+            class="w-4 h-4 cursor-pointer"
+          />
+          <img
+            v-if="client.service && !showAddService"
+            src="@/assets/svg/add-black.svg"
+            alt="add"
+            class="w-4 h-4 cursor-pointer ml-2"
+            @click="() => (showAddService = true)"
+          />
+          <router-link
+            v-if="client.service"
+            class="ml-2 flex items-center"
+            :to="'/clients/' + client._id + '/service-history'"
+          >
+            <p>Ver todos</p>
             <img
-              @click="editService"
-              src="@/assets/svg/edit-black.svg"
-              alt="edit"
-              class="w-4 h-4 cursor-pointer mr-2"
+              src="@/assets/svg/up-arrow-black.svg"
+              alt="go back"
+              class="w-4 h-3 transform rotate-90 ml-2"
             />
-            <router-link to="/" class="flex items-center">
-              <img
-                src="@/assets/svg/add-black.svg"
-                alt="add"
-                class="w-4 h-4 cursor-pointer"
-              />
-            </router-link>
-          </div>
+          </router-link>
         </div>
-        <Table :data="serviceTable(client.service)" />
       </div>
+      <Table v-if="client.service" :data="serviceTable(client.service)" />
       <AddService
-        v-else
+        v-if="!client.service || showAddService"
         :clientService="client.service"
         @set="setService"
         class="mt-8"
+        addMore
       />
       <!-- Beneficiaries' details -->
       <div v-if="client.beneficiaries">
         <div class="flex items-center justify-between my-4">
           <p>Beneficiários</p>
-          <router-link :to="'/clients/edit/' + client._id + '/beneficiaries'">
+          <div class="flex">
+            <router-link :to="'/clients/edit/' + client._id + '/beneficiaries'">
+              <img
+                src="@/assets/svg/edit-black.svg"
+                alt="edit"
+                class="w-4 h-4 cursor-pointer mr-2"
+              />
+            </router-link>
             <img
-              src="@/assets/svg/edit-black.svg"
-              alt="edit"
+              src="@/assets/svg/add-black.svg"
+              alt="add"
               class="w-4 h-4 cursor-pointer"
+              @click="() => (showAddBeneficiaries = true)"
             />
-          </router-link>
+          </div>
         </div>
         <div class="flex flex-col">
           <Table
@@ -56,13 +75,19 @@
             :class="{ 'order-first': beneficiary.isClient }"
           />
         </div>
+        <AddBeneficiaries
+          v-if="showAddBeneficiaries"
+          :client="client"
+          @set="setBeneficiaries"
+          addMore
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { computed, onBeforeMount } from '@vue/runtime-core'
+import { computed, onBeforeMount, ref } from '@vue/runtime-core'
 import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -71,18 +96,22 @@ import useGlobalHelpers from '@/mixins/useGlobalHelpers.js'
 import Table from '@/components/Table.vue'
 import Back from '@/components/Back.vue'
 import AddService from '@/components/AddService.vue'
+import AddBeneficiaries from '@/components/AddBeneficiaries.vue'
 
 export default {
   components: {
     Table,
     Back,
-    AddService
+    AddService,
+    AddBeneficiaries
   },
   setup() {
     const store = useStore()
     const route = useRoute()
     const router = useRouter()
     const { dateTimeFormatting, personTable, serviceTable } = useGlobalHelpers()
+    const showAddBeneficiaries = ref(false)
+    const showAddService = ref(false)
 
     onBeforeMount(async () => {
       await store.dispatch('fetchClient', route.params.id)
@@ -104,6 +133,16 @@ export default {
         service: newService
       })
       await store.dispatch('fetchClient', route.params.id)
+      showAddService.value = false
+    }
+
+    const setBeneficiaries = async (newBeneficiary) => {
+      await store.dispatch('addBeneficiary', {
+        clientId: route.params.id,
+        beneficiary: newBeneficiary
+      })
+      await store.dispatch('fetchClient', route.params.id)
+      showAddBeneficiaries.value = false
     }
 
     return {
@@ -112,7 +151,10 @@ export default {
       personTable,
       serviceTable,
       editService,
-      setService
+      setService,
+      setBeneficiaries,
+      showAddBeneficiaries,
+      showAddService
     }
   }
 }

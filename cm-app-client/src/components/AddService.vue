@@ -1,9 +1,12 @@
 <template>
   <div class="mb-8">
-    <div class="w-full flex items-center justify-between">
-      <p>Serviço</p>
+    <div
+      class="w-full flex items-center"
+      :class="addMore ? 'justify-center' : 'justify-between'"
+    >
+      <p v-if="!addMore">Serviço</p>
       <img
-        v-if="serviceEmpty"
+        v-if="!showServiceForm"
         src="@/assets/svg/add-black.svg"
         alt="add beneficiary"
         class="w-6 h-6 cursor-pointer"
@@ -53,20 +56,22 @@ export default {
     clientService: {
       type: Object,
       default: () => {}
+    },
+    addMore: {
+      type: Boolean,
+      default: false
     }
   },
   emits: ['set'],
   setup(props, { emit }) {
     const showServiceForm = ref(false)
-    const service = ref(
-      props.clientService ?? {
-        type: null,
-        regime: null,
-        shifts: null,
-        beginning: null,
-        duration: null
-      }
-    )
+    const service = ref({
+      type: null,
+      regime: null,
+      shifts: null,
+      beginning: null,
+      duration: null
+    })
 
     const serviceFilled = computed(() => {
       return (

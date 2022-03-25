@@ -3,7 +3,8 @@ import axios from 'axios'
 export default {
   state: {
     clients: null,
-    client: null
+    client: null,
+    services: null
   },
   mutations: {
     SET_CLIENTS(state, clients) {
@@ -11,6 +12,9 @@ export default {
     },
     SET_CLIENT(state, client) {
       state.client = client
+    },
+    SET_CLIENT_SERVICES(state, services) {
+      state.services = services
     }
   },
   actions: {
@@ -50,6 +54,19 @@ export default {
         })
         .then(({ data }) => {
           commit('SET_CLIENT', data)
+          return data
+        })
+    },
+    fetchClientServices({ commit }, clientId) {
+      return axios
+        .get(
+          process.env.VUE_APP_SERVER_URL +
+            'api/clients/' +
+            clientId +
+            '/services'
+        )
+        .then(({ data }) => {
+          commit('SET_CLIENT_SERVICES', data)
           return data
         })
     }

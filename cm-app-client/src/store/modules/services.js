@@ -42,6 +42,19 @@ export default {
           commit('SET_CLIENT', data)
           return data
         })
+    },
+    // eslint-disable-next-line no-unused-vars
+    activateService({ commit }, serviceId) {
+      return axios
+        .get(
+          process.env.VUE_APP_SERVER_URL +
+            'api/services/' +
+            serviceId +
+            '/activate'
+        )
+        .then(({ data }) => {
+          return data
+        })
     }
   },
   getters: {}

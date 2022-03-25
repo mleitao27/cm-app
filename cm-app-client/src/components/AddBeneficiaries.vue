@@ -1,7 +1,10 @@
 <template>
   <div class="mb-8">
-    <div class="w-full flex items-center justify-between">
-      <p>Beneficiários</p>
+    <div
+      class="w-full flex items-center"
+      :class="addMore ? 'justify-center' : 'justify-between'"
+    >
+      <p v-if="!addMore">Beneficiários</p>
       <img
         src="@/assets/svg/add-black.svg"
         alt="add beneficiary"
@@ -10,20 +13,22 @@
       />
     </div>
     <!-- Beneficiaries list -->
-    <div
-      v-for="beneficiary in client.beneficiaries"
-      :key="beneficiary._id"
-      class="w-full flex items-center justify-between"
-    >
-      <div class="bg-blue-100 p-4 mb-4 rounded-2xl">
-        {{ beneficiary }}
+    <div v-if="!addMore">
+      <div
+        v-for="beneficiary in beneficiaries"
+        :key="beneficiary._id"
+        class="w-full flex items-center justify-between"
+      >
+        <div class="bg-blue-100 p-4 mb-4 rounded-2xl">
+          {{ beneficiary }}
+        </div>
+        <img
+          src="@/assets/svg/trash-black.svg"
+          alt="remove beneficiary"
+          class="w-8 h-8 cursor-pointer"
+          @click="removeBeneficiary(beneficiary.fiscalNumber)"
+        />
       </div>
-      <img
-        src="@/assets/svg/trash-black.svg"
-        alt="remove beneficiary"
-        class="w-8 h-8 cursor-pointer"
-        @click="removeBeneficiary(beneficiary.fiscalNumber)"
-      />
     </div>
     <!-- Include client as beneficiary checkbox -->
     <div
@@ -80,6 +85,10 @@ export default {
     client: {
       type: Object,
       default: () => {}
+    },
+    addMore: {
+      type: Boolean,
+      default: false
     }
   },
   emits: ['set'],
@@ -117,7 +126,9 @@ export default {
         beneficiaries.value.push(currentBeneficiary.value)
       } else beneficiaries.value = [currentBeneficiary.value]
 
-      emit('set', beneficiaries)
+      if (props.addMore)
+        emit('set', { ...currentBeneficiary.value, isClient: false })
+      else emit('set', beneficiaries)
 
       // Hide form
       showBeneficiaryForm.value = false
@@ -135,13 +146,15 @@ export default {
       beneficiaries.value = beneficiaries.value.filter((beneficiary) => {
         return beneficiary.fiscalNumber !== fiscalNumber
       })
-      if (fiscalNumber === props.client.fiscalNumber)
-        clientAsBeneficiary.value = false
       emit('set', beneficiaries)
     }
 
     // Client as beneficiary
-    const clientAsBeneficiary = ref(false)
+    const clientAsBeneficiary = computed(() => {
+      return beneficiaries.value.find(
+        (b) => b.fiscalNumber === props.client.fiscalNumber
+      )
+    })
 
     const addClientAsBeneficiary = () => {
       beneficiaries.value.push({
@@ -150,15 +163,14 @@ export default {
         fiscalNumber: props.client.fiscalNumber,
         isClient: true
       })
-      clientAsBeneficiary.value = true
-      emit('set', beneficiaries)
+      if (props.addMore) emit('set', { ...props.client, isClient: true })
+      else emit('set', beneficiaries)
     }
 
     const removeClientAsBeneficiary = () => {
       beneficiaries.value = beneficiaries.value.filter((b) => {
         return b.fiscalNumber !== props.client.fiscalNumber
       })
-      clientAsBeneficiary.value = false
       emit('set', beneficiaries)
     }
 
@@ -193,7 +205,8 @@ export default {
       removeClientAsBeneficiary,
       clientFilled,
       beneficiaryFilled,
-      clientAlreadyBeneficiary
+      clientAlreadyBeneficiary,
+      beneficiaries
     }
   }
 }
