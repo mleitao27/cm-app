@@ -68,6 +68,7 @@ router.post('/', async (req, res) => {
 // Update client
 router.put('/:id', async (req, res) => {
     await db.updateDocument('clients', {_id: new mongodb.ObjectId(req.params.id)}, req.body);
+    await db.updateDocument('beneficiaries', {clientId: new mongodb.ObjectId(req.params.id), isClient: true}, req.body);
     res.status(200).send();
 });
 
