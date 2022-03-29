@@ -1,15 +1,15 @@
 <template>
   <div>
-    <GenericInput v-model:data="dataState.name" type="text" holder="Nome" />
+    <GenericInput v-model:data="dataState.name" type="text" holder="Nome:" />
     <GenericInput
       v-model:data="dataState.address"
       type="text"
-      holder="Morada"
+      holder="Morada:"
     />
     <GenericInput
       v-model:data="dataState.fiscalNumber"
       type="text"
-      holder="NIF"
+      holder="NIF:"
     />
   </div>
 </template>
