@@ -11,6 +11,14 @@
             class="w-4 h-3 transform rotate-90 ml-4"
           />
         </router-link>
+        <router-link class="flex items-center" to="/employees">
+          <p>Ver Funcionárixs</p>
+          <img
+            src="@/assets/svg/up-arrow-black.svg"
+            alt="see employee"
+            class="w-4 h-3 transform rotate-90 ml-4"
+          />
+        </router-link>
       </div>
     </div>
   </div>
