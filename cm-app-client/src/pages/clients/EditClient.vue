@@ -7,9 +7,6 @@
         class="mb-8"
       />
       <PersonForm v-model:data="data" />
-      <!-- <router-link :to="'/clients/edit/' + client._id + '/beneficiaries'">
-      <p>Editar beneficiários</p>
-    </router-link> -->
       <div class="w-full flex justify-center">
         <button
           @click="update"

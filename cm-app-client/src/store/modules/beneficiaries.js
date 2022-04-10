@@ -5,6 +5,14 @@ export default {
   mutations: {},
   actions: {
     // eslint-disable-next-line no-unused-vars
+    addBeneficiary({ commit }, data) {
+      return axios
+        .post(process.env.VUE_APP_SERVER_URL + 'api/beneficiaries', data)
+        .then(({ data }) => {
+          return data
+        })
+    },
+    // eslint-disable-next-line no-unused-vars
     updateBeneficiary({ commit }, newBeneficiary) {
       return axios
         .put(
