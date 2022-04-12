@@ -82,6 +82,10 @@
           addMore
         />
       </div>
+      <!-- Delete client -->
+      <GeneralButton color="red" @click="deleteClient">
+        Eliminar
+      </GeneralButton>
     </div>
   </div>
 </template>
@@ -97,13 +101,15 @@ import Table from '@/components/Table.vue'
 import Back from '@/components/Back.vue'
 import AddService from '@/components/AddService.vue'
 import AddBeneficiaries from '@/components/AddBeneficiaries.vue'
+import GeneralButton from '@/components/GeneralButton.vue'
 
 export default {
   components: {
     Table,
     Back,
     AddService,
-    AddBeneficiaries
+    AddBeneficiaries,
+    GeneralButton
   },
   setup() {
     const store = useStore()
@@ -145,6 +151,11 @@ export default {
       showAddBeneficiaries.value = false
     }
 
+    const deleteClient = async () => {
+      await store.dispatch('deleteClient', route.params.id)
+      router.push('/clients')
+    }
+
     return {
       client,
       dateTimeFormatting,
@@ -154,7 +165,8 @@ export default {
       setService,
       setBeneficiaries,
       showAddBeneficiaries,
-      showAddService
+      showAddService,
+      deleteClient
     }
   }
 }

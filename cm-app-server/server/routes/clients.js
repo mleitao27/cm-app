@@ -79,8 +79,11 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete client
-router.delete('/:id', (req, res) => {
-    res.status(200).send('delete client');
+router.delete('/:id', async (req, res) => {
+    await db.deleteDocument('clients', {_id: new mongodb.ObjectId(req.params.id)});
+    await db.deleteAllDocuments('services', {clientId: new mongodb.ObjectId(req.params.id)});
+    await db.deleteAllDocuments('beneficiaries', {clientId: new mongodb.ObjectId(req.params.id)});
+    res.status(200).send();
 });
 
 // Get client services

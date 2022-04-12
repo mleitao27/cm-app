@@ -69,6 +69,14 @@ export default {
           commit('SET_CLIENT_SERVICES', data)
           return data
         })
+    },
+    deleteClient({ commit }, clientId) {
+      return axios
+        .delete(process.env.VUE_APP_SERVER_URL + 'api/clients/' + clientId)
+        .then(({ data }) => {
+          commit('SET_CLIENT', null)
+          return data
+        })
     }
   },
   getters: {}
