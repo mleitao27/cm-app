@@ -12,11 +12,13 @@ const clients = require('./routes/clients');
 const employees = require('./routes/employees');
 const services = require('./routes/services');
 const beneficiaries = require('./routes/beneficiaries');
+const shifts = require('./routes/shifts');
 
 app.use('/api/clients', clients);
 app.use('/api/employees', employees);
 app.use('/api/services', services);
 app.use('/api/beneficiaries', beneficiaries);
+app.use('/api/shifts', shifts);
 
 const port = process.env.PORT || 5000;
 

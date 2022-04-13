@@ -12,10 +12,10 @@ router.get('/', async (req, res) => {
 // Get employee by id
 router.get('/:id', async (req, res) => {
     let employee = await db.getFirstDocument('employees', {_id: new mongodb.ObjectId(req.params.id)})
-    res.status(200).send({...employee});
+    res.status(200).send(employee);
 });
 
-// Add employees
+// Add employee
 router.post('/', async (req, res) => {
     let employeeId = await db.insertDocument('employees', {
         name: req.body.name,
